@@ -1,22 +1,45 @@
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
 fun App() {
@@ -42,6 +65,7 @@ fun AppContent(viewmodel: HomeViewmodel) {
         }
 
         val scrollState = rememberLazyGridState()
+        val corotineScope = rememberCoroutineScope()
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -51,7 +75,14 @@ fun AppContent(viewmodel: HomeViewmodel) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(cols),
                 state = scrollState,
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(16.dp),
+                modifier = Modifier.draggable(
+                    orientation = Orientation.Vertical,
+                    state = rememberDraggableState{delta->
+                        corotineScope.launch{
+                            scrollState.scrollBy(delta)
+                        }
+                    })
             ) {
 
                 item(span = { GridItemSpan(cols) }) {
@@ -102,13 +133,19 @@ fun AppContent(viewmodel: HomeViewmodel) {
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.padding(horizontal = 16.dp).heightIn(min = 40.dp)
                             )
-                            Spacer(modifier = Modifier.heightIn(16.dp))
-                            Text(
-                                text = "${products.price.toString()} BDT",
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(horizontal = 16.dp).heightIn(min = 40.dp)
-                            )
+                            Spacer(modifier = Modifier.heightIn(5.dp))
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Text(
+                                    text = "${products.price.toString()} BDT",
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding(horizontal = 16.dp).heightIn(min = 40.dp)
+                                )
+
+                            }
 
                         }
 
@@ -122,6 +159,4 @@ fun AppContent(viewmodel: HomeViewmodel) {
         }
 
     }
-
-
 }
