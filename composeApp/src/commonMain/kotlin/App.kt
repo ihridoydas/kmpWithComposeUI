@@ -1,4 +1,5 @@
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -30,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -37,22 +39,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
+import data.Product
 import kotlinx.coroutines.launch
+import list.ListComponent
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Composable
-@Preview
-fun App() {
-    MaterialTheme {
-        AppContent(viewmodel = HomeViewmodel())
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppContent(viewmodel: HomeViewmodel) {
-    val products = viewmodel.products.collectAsState()
-
+fun AppContent(
+    products: State<ListComponent.Model>,
+    onItemClicked: (Product) -> Unit
+) {
     BoxWithConstraints {
         val scope = this
         val maxWidth = scope.maxWidth
@@ -65,7 +62,7 @@ fun AppContent(viewmodel: HomeViewmodel) {
         }
 
         val scrollState = rememberLazyGridState()
-        val corotineScope = rememberCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -78,8 +75,8 @@ fun AppContent(viewmodel: HomeViewmodel) {
                 contentPadding = PaddingValues(16.dp),
                 modifier = Modifier.draggable(
                     orientation = Orientation.Vertical,
-                    state = rememberDraggableState{delta->
-                        corotineScope.launch{
+                    state = rememberDraggableState { delta ->
+                        coroutineScope.launch {
                             scrollState.scrollBy(delta)
                         }
                     })
@@ -109,29 +106,34 @@ fun AppContent(viewmodel: HomeViewmodel) {
                 }
 
                 items(
-                    items = products.value,
+                    items = products.value.items,
                     key = { product -> product.id.toString() }
-                ) { products ->
+                ) { product ->
                     Card(
                         shape = RoundedCornerShape(15.dp),
-                        modifier = Modifier.padding(5.dp).fillMaxWidth(),
+                        modifier = Modifier.padding(5.dp)
+                            .fillMaxWidth()
+                            .clickable {
+                                onItemClicked(product)
+                            },
                         elevation = CardDefaults.cardElevation(),
                     ) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            val painter = rememberImagePainter(products.image.toString())
+                            val painter = rememberImagePainter(product.image.toString())
                             Image(
                                 painter = painter,
                                 modifier = Modifier.height(130.dp).padding(8.dp),
-                                contentDescription = products.description
+                                contentDescription = product.description
                             )
                             Text(
-                                text = products.title.toString(),
+                                text = product.title.toString(),
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(horizontal = 16.dp).heightIn(min = 40.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                                    .heightIn(min = 40.dp)
                             )
                             Spacer(modifier = Modifier.heightIn(5.dp))
                             Box(
@@ -139,10 +141,11 @@ fun AppContent(viewmodel: HomeViewmodel) {
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Text(
-                                    text = "${products.price.toString()} BDT",
+                                    text = "${product.price.toString()} BDT",
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.padding(horizontal = 16.dp).heightIn(min = 40.dp)
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                        .heightIn(min = 40.dp)
                                 )
 
                             }

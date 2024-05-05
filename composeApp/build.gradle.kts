@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
 
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.23" //decompose step 2
 }
 
 kotlin {
@@ -26,11 +26,12 @@ kotlin {
         browser(){
             commonWebpackConfig(){
                 outputFileName = "kmpWithComposeUI.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).copy()
+                devServer = (devServer
+                    ?: KotlinWebpackConfig.DevServer()).copy()
             }
+            //it will be generate executable js file
+            binaries.executable()
         }
-        //it will be generate executable js file
-        binaries.executable()
 
     }
     
@@ -53,6 +54,10 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             //ktor client
             implementation(libs.ktor.client.android)
+
+            //decompose navigation //decompose step 3
+            implementation("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
+            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -77,6 +82,11 @@ kotlin {
 
             //compose image loader
             api(libs.image.loader)
+
+            //decompose navigation //decompose step 1
+            implementation("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
+            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
