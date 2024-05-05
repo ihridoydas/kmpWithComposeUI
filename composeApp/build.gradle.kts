@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -18,6 +19,20 @@ kotlin {
     }
     
     jvm("desktop")
+    //Step 1
+    //Tool bundler for converting Kotlin/Native code to JavaScript code.
+    js(IR){
+        moduleName = "kmpWithComposeUI"
+        browser(){
+            commonWebpackConfig(){
+                outputFileName = "kmpWithComposeUI.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).copy()
+            }
+        }
+        //it will be generate executable js file
+        binaries.executable()
+
+    }
     
     listOf(
         iosX64(),
@@ -117,4 +132,9 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+//Step 3
+compose.experimental {
+    web.application {}
 }
