@@ -45,6 +45,24 @@ https://fakestoreapi.com/products/
 composeApp:jsBrowserDevelopmentRun
 ```
 
+🧬 Samples
+------------
+
+| Android                                                                               | IOS                                                                               |
+|---------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| <img src="screenshots/android.png" alt="Android Screenshot" width="250" height="500"> | <img src="screenshots/ios.png" alt="Android Screenshot" width="250" height="500"> |
+
+
+
+| Web app                     |
+|-----------------------------|
+| ![web](screenshots/web.png) |
+
+| Desktop app                         |
+|-------------------------------------|
+| ![desktop](screenshots/desktop.png) | 
+
+
 This is a Kotlin Multiplatform project targeting Android, iOS, Desktop and Web.
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
@@ -61,12 +79,3 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Desktop and Web.
   you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
-
-
-🧬 Samples
-------------
-
-|                                     |                                     |
-|-------------------------------------|-------------------------------------|
-| ![android](screenshots/android.png) | ![ios](screenshots/ios.png)         |
-| ![web](screenshots/web.png)         | ![desktop](screenshots/desktop.png) |
