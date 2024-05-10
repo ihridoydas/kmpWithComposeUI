@@ -12,3 +12,25 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Desktop.
 
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+
+//Kotlinx Serialization
+https://github.com/Kotlin/kotlinx.serialization
+
+//Kotlinx Coroutines
+https://github.com/Kotlin/kotlinx.coroutines
+
+//ktor client for Android and iOS  
+https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-ktor-sqldelight.html#add-gradle-dependencies
+
+//moko mvvm
+https://github.com/icerockdev/moko-mvvm
+
+//compose image loader
+https://github.com/qdsfdhvh/compose-imageloader
+
+//We will use fake store api for this project
+https://fakestoreapi.com/
+```agsl
+https://fakestoreapi.com/products/
+```
+
