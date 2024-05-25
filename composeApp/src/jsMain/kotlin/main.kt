@@ -9,11 +9,14 @@ import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.component.setupDefaultComponents
 import com.seiko.imageloader.defaultImageResultMemoryCache
+import di.startKoinJs
 import okio.FileSystem
 import org.jetbrains.skiko.wasm.onWasmReady
 import root.DefaultRootComponent
+import root.RootComponent
 import root.RootContent
 
+val koin = startKoinJs().koin
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
@@ -22,12 +25,7 @@ fun main() {
             CompositionLocalProvider(
                 LocalImageLoader provides remember { generateImageLoader() },
             ) {
-                val homeViewModel = HomeViewmodel()
-                val root =
-                    DefaultRootComponent(
-                        componentContext = DefaultComponentContext(LifecycleRegistry()),
-                        homeViewModel
-                    )
+                val root = koin.get<RootComponent>()
                 RootContent(root, modifier = Modifier)
             }
         }

@@ -1,30 +1,23 @@
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.component.setupDefaultComponents
-import com.seiko.imageloader.intercept.bitmapMemoryCacheConfig
-import com.seiko.imageloader.intercept.imageMemoryCacheConfig
-import com.seiko.imageloader.intercept.painterMemoryCacheConfig
+import com.seiko.imageloader.defaultImageResultMemoryCache
+import di.startKoinJvm
 import okio.Path.Companion.toOkioPath
-import root.DefaultRootComponent
+import root.RootComponent
 import root.RootContent
 import java.io.File
 
+val koin = startKoinJvm().koin
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "kmpWithComposeUI",
     ) {
-        val homeViewModel = HomeViewmodel()
-        val root =
-            DefaultRootComponent(
-                componentContext = DefaultComponentContext(LifecycleRegistry()),
-                homeViewModel
-            )
-        RootContent(root, modifier = Modifier)
+        val rootComponent = koin.get<RootComponent>()
+        RootContent(rootComponent, modifier = Modifier)
     }
 }
 
@@ -34,17 +27,10 @@ fun generateImageLoader(): ImageLoader {
             setupDefaultComponents()
         }
         interceptor {
-            // cache 32MB bitmap
-            bitmapMemoryCacheConfig {
-                maxSize(32 * 1024 * 1024) // 32MB
-            }
-            // cache 50 image
-            imageMemoryCacheConfig {
-                maxSize(50)
-            }
-            // cache 50 painter
-            painterMemoryCacheConfig {
-                maxSize(50)
+            // cache 100 success image result, without bitmap
+            defaultImageResultMemoryCache()
+            memoryCacheConfig {
+                maxSizeBytes(32 * 1024 * 1024) // 32MB
             }
             diskCacheConfig {
                 directory(getCacheDir().toOkioPath().resolve("image_cache"))
