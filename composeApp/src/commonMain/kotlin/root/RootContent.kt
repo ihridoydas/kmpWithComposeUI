@@ -1,8 +1,9 @@
 package root
 
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.P
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -17,7 +18,7 @@ fun RootContent(
 
     MaterialTheme {
         Children(
-            stack = component.childStack,
+            stack = component.stack,
             modifier = modifier,
             animation = stackAnimation(fade())
         ) {
@@ -27,4 +28,6 @@ fun RootContent(
             }
         }
     }
+
+
 }

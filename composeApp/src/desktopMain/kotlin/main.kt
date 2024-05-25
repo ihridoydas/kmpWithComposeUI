@@ -1,3 +1,4 @@
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.arkivanov.decompose.DefaultComponentContext
@@ -17,12 +18,13 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "kmpWithComposeUI",
     ) {
-        val homeViewmodel = HomeViewmodel()
-        val root = DefaultRootComponent(
-            componentContext = DefaultComponentContext(LifecycleRegistry()),
-            homeViewmodel = homeViewmodel)
-
-        RootContent(root)
+        val homeViewModel = HomeViewmodel()
+        val root =
+            DefaultRootComponent(
+                componentContext = DefaultComponentContext(LifecycleRegistry()),
+                homeViewModel
+            )
+        RootContent(root, modifier = Modifier)
     }
 }
 

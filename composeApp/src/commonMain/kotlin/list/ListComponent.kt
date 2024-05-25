@@ -7,10 +7,10 @@ import com.arkivanov.decompose.value.Value
 import data.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 interface ListComponent {
-
     val model: Value<Model>
 
     fun onItemClicked(item: Product)
@@ -21,11 +21,12 @@ interface ListComponent {
 }
 
 class DefaultListComponent(
-    private val componentContext : ComponentContext,
-    private val homeViewmodel: HomeViewmodel,
+    private val componentContext: ComponentContext,
+    private val homeViewModel: HomeViewmodel,
     private val onItemSelected: (item: Product) -> Unit
-):ListComponent, ComponentContext by componentContext {
-    private val _model = MutableValue(ListComponent.Model(items = emptyList()))
+) : ListComponent, ComponentContext by componentContext {
+
+    private val _model = MutableValue<ListComponent.Model>(ListComponent.Model(items = emptyList()))
     override val model: Value<ListComponent.Model> = _model
     override fun onItemClicked(item: Product) {
         onItemSelected(item)
@@ -33,9 +34,11 @@ class DefaultListComponent(
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            homeViewmodel.products.collect{
+            homeViewModel.products.collect {
                 _model.value = ListComponent.Model(items = it)
             }
         }
     }
+
+
 }

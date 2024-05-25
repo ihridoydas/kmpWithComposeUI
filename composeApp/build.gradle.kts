@@ -1,3 +1,4 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
@@ -6,7 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
 
-    kotlin("plugin.serialization") version "1.9.23" //decompose step 2
+    kotlin("plugin.serialization") version "1.9.21" //decompose step2
 }
 
 kotlin {
@@ -55,7 +56,7 @@ kotlin {
             //ktor client
             implementation(libs.ktor.client.android)
 
-            //decompose navigation //decompose step 3
+            //decompose step3
             implementation("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
             implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
         }
@@ -63,29 +64,25 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
-            //material3
             implementation(compose.material3)
             implementation(compose.ui)
+            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
 
-            // Works as common dependency as well as the platform one
-            implementation (libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.coroutines.core)
-            //ktor client
+            implementation(libs.kotlinx.serialization.json)
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
 
-            //moko resources mvvm
             implementation(libs.mvvm.core)
 
-            //compose image loader
             api(libs.image.loader)
 
-            //decompose navigation //decompose step 1
             implementation("com.arkivanov.decompose:decompose:2.2.2-compose-experimental")
             implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.2.2-compose-experimental")
+            //decompose step1
 
         }
         desktopMain.dependencies {

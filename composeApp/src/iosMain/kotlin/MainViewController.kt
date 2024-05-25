@@ -3,6 +3,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
@@ -24,14 +25,36 @@ fun MainViewController() = ComposeUIViewController {
             generateImageLoader()
         },
     ) {
-        val homeViewmodel = HomeViewmodel()
-        val root = DefaultRootComponent(
-            componentContext = DefaultComponentContext(LifecycleRegistry()),
-            homeViewmodel = homeViewmodel)
-
-        RootContent(root)
+        val lifecycle = LifecycleRegistry()
+        lifecycle.subscribe(LifecycleCallbacksImpl())
+        val homeViewModel = HomeViewmodel()
+        val root =
+            DefaultRootComponent(
+                componentContext = DefaultComponentContext(LifecycleRegistry()),
+                homeViewModel
+            )
+        RootContent(root, modifier = Modifier)
     }
 }
+
+class LifecycleCallbacksImpl: Lifecycle.Callbacks {
+    override fun onCreate() {
+        super.onCreate()
+        println("onCreate")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("onDestroy")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println("onPause")
+    }
+
+}
+
 
 fun generateImageLoader(): ImageLoader {
     return ImageLoader {

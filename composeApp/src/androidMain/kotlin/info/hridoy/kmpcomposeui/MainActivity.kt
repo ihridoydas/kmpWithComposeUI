@@ -31,12 +31,9 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalImageLoader provides remember { generateImageLoader() },
             ) {
-                val homeViewmodel = HomeViewmodel()
-                val root = DefaultRootComponent(defaultComponentContext(), homeViewmodel)
-                RootContent(
-                    component = root,
-                    modifier = Modifier
-                )
+                val homeViewModel = HomeViewmodel()
+                val root = DefaultRootComponent(defaultComponentContext(), homeViewModel)
+                RootContent(root, modifier = Modifier)
             }
 
         }

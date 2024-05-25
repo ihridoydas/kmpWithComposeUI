@@ -1,16 +1,16 @@
 package detail
 
-import HomeViewmodel
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import data.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import list.ListComponent
 
 interface DetailComponent {
-
     val model: Value<Model>
 
     fun onBackPressed()
@@ -21,10 +21,11 @@ interface DetailComponent {
 }
 
 class DefaultDetailComponent(
-    private val componentContext : ComponentContext,
+    private val componentContext: ComponentContext,
     private val item: Product,
-    private val onBack: () -> Unit
-):DetailComponent, ComponentContext by componentContext {
+    private val onBack: () -> Unit,
+) : DetailComponent, ComponentContext by componentContext {
+
     private val _model = MutableValue(DetailComponent.Model(item = item))
     override val model: Value<DetailComponent.Model> = _model
     override fun onBackPressed() {
@@ -33,7 +34,9 @@ class DefaultDetailComponent(
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
-            //if we need to call in Detail Component, call here
+            //IF we need to call api in Detail Component, call here
         }
     }
+
+
 }

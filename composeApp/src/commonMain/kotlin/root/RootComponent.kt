@@ -17,26 +17,29 @@ import list.ListComponent
 
 interface RootComponent {
 
-    val childStack: Value<ChildStack<*, Child>>
+    val stack: Value<ChildStack<*, Child>>
 
     fun onBackClicked()
 
     sealed class Child {
-        class ListChild(val component: ListComponent): Child()
+        class ListChild(val component: ListComponent) : Child()
 
-        class DetailChild(val component: DetailComponent): Child()
+        class DetailChild(val component: DetailComponent) : Child()
     }
-
 }
 
+
+//Component -> Config(pushing in navigation and passing data) -> Deciding the Child(childFactory) -> Deciding The UI(RootContent)
+
+
 class DefaultRootComponent(
-    private val componentContext : ComponentContext,
-    private val homeViewmodel: HomeViewmodel
-): RootComponent, ComponentContext by componentContext{
+    private val componentContext: ComponentContext,
+    private val homeViewModel: HomeViewmodel,
+) : RootComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
-    override val childStack: Value<ChildStack<*, RootComponent.Child>> =
+    override val stack: Value<ChildStack<*, RootComponent.Child>> =
         childStack(
             source = navigation,
             serializer = Config.serializer(),
@@ -44,30 +47,22 @@ class DefaultRootComponent(
             handleBackButton = true,
             childFactory = ::childFactory
         )
-    private fun childFactory(
-        config: Config,
-        componentContext: ComponentContext
-    ): RootComponent.Child{
-        return when(config){
+
+
+    private fun childFactory(config: Config, componentContext: ComponentContext): RootComponent.Child {
+        return when (config) {
             is Config.List -> RootComponent.Child.ListChild(
-                DefaultListComponent(
-                    componentContext,
-                    homeViewmodel
-                ){item ->
+                DefaultListComponent(componentContext,homeViewModel) { item ->
                     navigation.push(Config.Detail(item))
-                    //it will change the content of Detail
+                    //it will change the content to Detail
                 }
             )
             is Config.Detail -> RootComponent.Child.DetailChild(
-                DefaultDetailComponent(
-                    componentContext,
-                    item = config.item
-                ){
+                DefaultDetailComponent(componentContext, config.item) {
                     onBackClicked()
                 }
             )
         }
-
     }
 
     override fun onBackClicked() {
@@ -76,11 +71,13 @@ class DefaultRootComponent(
 
     @Serializable
     sealed interface Config {
+
         @Serializable
         data object List : Config
+
         @Serializable
         data class Detail(val item: Product) : Config
-
     }
+
 
 }

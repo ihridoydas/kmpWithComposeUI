@@ -42,14 +42,10 @@ import com.seiko.imageloader.rememberImagePainter
 import data.Product
 import kotlinx.coroutines.launch
 import list.ListComponent
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppContent(
-    products: State<ListComponent.Model>,
-    onItemClicked: (Product) -> Unit
-) {
+fun AppContent(products: State<ListComponent.Model>, onItemClicked: (Product) -> Unit) {
     BoxWithConstraints {
         val scope = this
         val maxWidth = scope.maxWidth
@@ -77,7 +73,7 @@ fun AppContent(
                     orientation = Orientation.Vertical,
                     state = rememberDraggableState { delta ->
                         coroutineScope.launch {
-                            scrollState.scrollBy(delta)
+                            scrollState.scrollBy(-delta)
                         }
                     })
             ) {
@@ -111,11 +107,9 @@ fun AppContent(
                 ) { product ->
                     Card(
                         shape = RoundedCornerShape(15.dp),
-                        modifier = Modifier.padding(5.dp)
-                            .fillMaxWidth()
-                            .clickable {
-                                onItemClicked(product)
-                            },
+                        modifier = Modifier.padding(8.dp).fillMaxWidth().clickable {
+                            onItemClicked(product)
+                        },
                         elevation = CardDefaults.cardElevation(),
                     ) {
                         Column(
