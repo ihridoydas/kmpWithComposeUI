@@ -1,0 +1,18 @@
+{
+	"info": {
+		"_postman_id": "c10b86a9-1e07-4dd0-ad4c-a65e4466134e",
+		"name": "FakeStoreAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33370398"
+	},
+	"item": [
+		{
+			"name": "All Products",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
