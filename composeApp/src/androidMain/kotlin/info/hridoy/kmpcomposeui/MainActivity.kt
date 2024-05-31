@@ -1,13 +1,15 @@
 package info.hridoy.kmpcomposeui
 
-import App
+import HomeViewmodel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.arkivanov.decompose.defaultComponentContext
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.cache.memory.maxSizePercent
@@ -17,6 +19,9 @@ import com.seiko.imageloader.intercept.imageMemoryCacheConfig
 import com.seiko.imageloader.intercept.painterMemoryCacheConfig
 import com.seiko.imageloader.option.androidContext
 import okio.Path.Companion.toOkioPath
+import root.DefaultRootComponent
+import root.RootComponent
+import root.RootContent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +30,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             CompositionLocalProvider(
                 LocalImageLoader provides remember { generateImageLoader() },
-                ) {
-                App()
+            ) {
+                val homeViewModel = HomeViewmodel()
+                val root = DefaultRootComponent(defaultComponentContext(), homeViewModel)
+                RootContent(root, modifier = Modifier)
             }
 
         }
@@ -65,5 +72,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+    //App()
 }
