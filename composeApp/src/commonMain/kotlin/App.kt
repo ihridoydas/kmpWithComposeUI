@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.seiko.imageloader.rememberImagePainter
@@ -46,13 +48,14 @@ import list.ListComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppContent(products: State<ListComponent.Model>, onItemClicked: (Product) -> Unit) {
+
     BoxWithConstraints {
         val scope = this
         val maxWidth = scope.maxWidth
 
         var cols = 2
         var modifier = Modifier.fillMaxWidth()
-        if (maxWidth >= 840.dp) {
+        if (maxWidth > 840.dp) {
             cols = 3
             modifier = Modifier.widthIn(max = 1080.dp)
         }
@@ -65,6 +68,7 @@ fun AppContent(products: State<ListComponent.Model>, onItemClicked: (Product) ->
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(cols),
                 state = scrollState,
@@ -90,7 +94,7 @@ fun AppContent(products: State<ListComponent.Model>, onItemClicked: (Product) ->
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Search,
-                                    contentDescription = "Search Products"
+                                    contentDescription = "Search"
                                 )
                             },
                             placeholder = { Text("Search Products") }
@@ -98,62 +102,62 @@ fun AppContent(products: State<ListComponent.Model>, onItemClicked: (Product) ->
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-
                 }
+
 
                 items(
                     items = products.value.items,
-                    key = { product -> product.id.toString() }
-                ) { product ->
+                    key = { product -> product.id.toString() }) { product ->
+
                     Card(
                         shape = RoundedCornerShape(15.dp),
                         modifier = Modifier.padding(8.dp).fillMaxWidth().clickable {
                             onItemClicked(product)
                         },
-                        elevation = CardDefaults.cardElevation(),
+                        elevation = CardDefaults.cardElevation(2.dp)
                     ) {
                         Column(
                             verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            val painter = rememberImagePainter(product.image.toString())
+                            val painter = rememberImagePainter(url = product.image.toString())
                             Image(
-                                painter = painter,
+                                painter,
                                 modifier = Modifier.height(130.dp).padding(8.dp),
-                                contentDescription = product.description
+                                contentDescription = product.title
                             )
-                            Text(
-                                text = product.title.toString(),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                                    .heightIn(min = 40.dp)
-                            )
-                            Spacer(modifier = Modifier.heightIn(5.dp))
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Text(
-                                    text = "${product.price.toString()} BDT",
+                                    product.title.toString(),
+                                    textAlign = TextAlign.Start,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                         .heightIn(min = 40.dp)
                                 )
-
                             }
-
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Text(
+                                    "${product.price.toString()} INR ",
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.wrapContentWidth()
+                                        .padding(horizontal = 16.dp).heightIn(min = 40.dp)
+                                )
+                            }
                         }
-
-
                     }
-
                 }
-
             }
 
         }
-
     }
 }

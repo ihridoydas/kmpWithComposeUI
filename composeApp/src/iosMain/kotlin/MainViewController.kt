@@ -8,9 +8,7 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.component.setupDefaultComponents
-import com.seiko.imageloader.intercept.bitmapMemoryCacheConfig
-import com.seiko.imageloader.intercept.imageMemoryCacheConfig
-import com.seiko.imageloader.intercept.painterMemoryCacheConfig
+import com.seiko.imageloader.defaultImageResultMemoryCache
 import okio.Path.Companion.toPath
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
@@ -19,38 +17,41 @@ import root.DefaultRootComponent
 import root.RootComponent
 import root.RootContent
 
-fun MainViewController() = ComposeUIViewController {
+fun MainViewController(rootComponent: RootComponent) = ComposeUIViewController {
     CompositionLocalProvider(
-        LocalImageLoader provides remember {
-            generateImageLoader()
-        },
+        LocalImageLoader provides remember { generateImageLoader() },
     ) {
-        val lifecycle = LifecycleRegistry()
-        lifecycle.subscribe(LifecycleCallbacksImpl())
-        val homeViewModel = HomeViewmodel()
-        val root =
-            DefaultRootComponent(
-                componentContext = DefaultComponentContext(LifecycleRegistry()),
-                homeViewModel
-            )
-        RootContent(root, modifier = Modifier)
+//        val lifecycle = LifecycleRegistry()
+//        lifecycle.subscribe(LifecycleCallbacksImpl())
+//        val homeViewModel = HomeViewModel()
+//        val root =
+//            DefaultRootComponent(
+//                componentContext = DefaultComponentContext(LifecycleRegistry()),
+//                homeViewModel
+//            )
+        RootContent(rootComponent, modifier = Modifier)
     }
 }
 
 class LifecycleCallbacksImpl: Lifecycle.Callbacks {
-    override fun onCreate() {
+    override fun onResume() {
         super.onCreate()
-        println("onCreate")
+        println("Compose onResume")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        println("onDestroy")
+        println("Compose onDestroy")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        println("Compose onStop")
     }
 
     override fun onPause() {
         super.onPause()
-        println("onPause")
+        println("Compose onPause")
     }
 
 }
@@ -62,17 +63,10 @@ fun generateImageLoader(): ImageLoader {
             setupDefaultComponents()
         }
         interceptor {
-            // cache 32MB bitmap
-            bitmapMemoryCacheConfig {
-                maxSize(32 * 1024 * 1024) // 32MB
-            }
-            // cache 50 image
-            imageMemoryCacheConfig {
-                maxSize(50)
-            }
-            // cache 50 painter
-            painterMemoryCacheConfig {
-                maxSize(50)
+            // cache 100 success image result, without bitmap
+            defaultImageResultMemoryCache()
+            memoryCacheConfig {
+                maxSizeBytes(32 * 1024 * 1024) // 32MB
             }
             diskCacheConfig {
                 directory(getCacheDir().toPath().resolve("image_cache"))
